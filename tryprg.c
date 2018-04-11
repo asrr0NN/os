@@ -45,7 +45,7 @@ int allocate_pid(){
 
 void release_pid(int pid){
 	pid=pid-100;
-	//obj[pid].status=0;	
+	obj[pid].status=0;	
 }
 void allocate_map(){
 	for(int i=0;i<(MAX_PID-MIN_PID);i++){
@@ -74,22 +74,17 @@ void *call(){
 }
  
 void *manager(){
-	
-	for(int j=0;j<10;j++){
-		count=0;
-	//int c;
+	count=0;
+	int c;
 	//printf("enter c");
 	//scanf("%d",&c);
 	
-		for(int i=0;i<(MAX_PID-MIN_PID);i++){
-			if(obj[i].status==0){
-				count=count+1;
-			}
+	for(int i=0;i<(MAX_PID-MIN_PID);i++){
+		if(obj[i].status==0){
+			count=count+1;
 		}
-	printf("count%d",count);
-	sleep(2);
 	}
-	//printf("MANAGER");
+printf("manager");
 	
 	pthread_exit((void*)count);
 }
@@ -97,36 +92,28 @@ void *manager(){
 
 
 int main(){
-	pid_t pid;
+	
 	allocate_map();
-	int *t; 
 	int size;
 	printf("Enter the number of threads created ");
 	scanf("%d",&size);
 	pthread_t tpid[1000];
 	
-	pid=fork();
 	
-	if(pid>0){
-		printf("PARENT");
-		pthread_create(&tpid[0],NULL,manager,NULL);
-		pthread_join(tpid[0],(void **)&t);
-		printf("\nNUMBER OF THREADS VACENT %d",t);
-		//sleep(2);
-		
+		int *t; 
+	pthread_create(&tpid[0],NULL,manager,NULL);
+	pthread_join(tpid[0],(void **)&t);
+	
+	for(int i=1;i<=size;i++){
+		pthread_create(&tpid[i],NULL,call,NULL);
+		pthread_join(tpid[i],NULL);
 	}
-	if(pid==0){
-		for(int i=1;i<=size;i++){
-			pthread_create(&tpid[i],NULL,call,NULL);
-			pthread_join(tpid[i],NULL);
-		}
 	
-		for(int i=1;i<=size;i++){
-			pthread_join(tpid[i],NULL);
-		}
+	for(int i=1;i<=size;i++){
+		pthread_join(tpid[i],NULL);
 	}
 	//pthread_join(tpid[0],(void **)&t);
-	
+	printf("\nt%d",t);
 	
 	return 0;
 }
