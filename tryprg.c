@@ -53,7 +53,7 @@ aa:	last++;
 //complexity of release_pid=1(constant)
 
 void release_pid(int pid){
-	pid=pid-100;
+	pid=pid-100;		// comment this line or next line helps to check the manager thread
 	obj[pid].status=0;	//if we remove the it shows the pids not released correctly 
 }
 
